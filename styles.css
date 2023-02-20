@@ -1,0 +1,31 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+.container{
+width: 1200px;
+margin: 20px 20px;
+padding: 20px;
+}
+input{
+    padding: 10px;
+    min-width: 250px;
+    margin-bottom: 10px;
+
+}
+button{
+padding: 10px;
+background-color: green;
+color: white;
+
+
+}
+h1{
+    color: green;
+}
+.sub-marks{
+min-width: 250px;
+min-height: 100px;
+}
+
