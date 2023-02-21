@@ -1,6 +1,8 @@
 <?php
 session_start();
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,9 +10,12 @@ session_start();
     <link href="../styles.css" rel="stylesheet" />
     <title>User Detail Page</title>
 </head>
-<?php
 
+
+<?php
 $first_name_err = $last_name_err = "";
+
+
 // validating the user
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($_POST["first_name"])) {
@@ -26,8 +31,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $last_name_err = "Must be an alphaber";
     }
 }
-//method to be runned on submit button click
 
+
+/*method to be runned on
+ submit button click*/
 if (array_key_exists('submit', $_POST)) {
     if ($first_name_err == "" && $last_name_err == "") {
         $_SESSION["first_name"] = test_input($_POST['first_name']);
@@ -37,7 +44,9 @@ if (array_key_exists('submit', $_POST)) {
     }
 }
 
-//to avoid sql injection we use this method
+
+/* to avoid sql injection
+ we use this method*/
 function test_input($data) {
     $data = trim($data);
     $data = stripslashes($data);
@@ -45,6 +54,8 @@ function test_input($data) {
     return $data;
   }
 ?>
+
+
 
 <body>
     <div class="container">
@@ -57,8 +68,8 @@ function test_input($data) {
 </body>
 </div>
 
-<!-- using this script to fill the full_name feild live -->
 
+<!-- using this script to fill the full_name feild live -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -68,5 +79,6 @@ function test_input($data) {
         });
     });
 </script>
+
 
 </html>
