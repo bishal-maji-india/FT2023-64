@@ -4,9 +4,9 @@ if (!isset($_SESSION["login"])) {
     header("location: ../assignment_7/auth.php");
 }else{
     if (isset($_GET['q'])) {
-        print("yes1");
+        // if query is set in the address bar
         $page = $_GET['q'];
-        $page_filename = "../assignment_{$page}/index.php";
+        $page_filename = "../basic_php/assignment_{$page}/index.php";
         if (file_exists($page_filename)) {
             session_abort();
             print("yes");
