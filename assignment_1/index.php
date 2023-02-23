@@ -13,7 +13,10 @@ session_start();
 
 
 <?php
+require('../user.php');
 $first_name_err = $last_name_err = "";
+$user=new User();
+
 
 
 // validating the user
@@ -37,8 +40,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
  submit button click*/
 if (array_key_exists('submit', $_POST)) {
     if ($first_name_err == "" && $last_name_err == "") {
-        $_SESSION["first_name"] = test_input($_POST['first_name']);
-        $_SESSION["last_name"] = test_input($_POST['last_name']);
+        $user->setFirstName(test_input($_POST['first_name']));
+        $user->setLastName(test_input($_POST['last_name']));
+        $_SESSION["first_name"] = $user->getFirstName();
+        $_SESSION["last_name"] = $user->getLastName();
         header("Location: welcome.php");
         exit;
     }
