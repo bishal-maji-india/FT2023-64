@@ -9,14 +9,14 @@ if (!isset($_SESSION["login"])) {
         $page_filename = "../basic_php/assignment_{$page}/index.php";
         if (file_exists($page_filename)) {
             session_abort();
-            print("yes");
+
             include($page_filename);
           }else{
                 print("no file exist {$page_filename}");
           }
 
       } else {
-        print("no");
+
         $page_filename = "/index.php";
         if (file_exists($page_filename)) {
             session_abort();
