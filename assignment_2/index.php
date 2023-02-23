@@ -8,6 +8,8 @@
     <title>Assignment 2</title>
 </head>
 <?php
+require('../user.php');
+$user =new User();
 
 $first_name_err = $last_name_err = $img_upload_err = "";
 $first_name = $last_name = "";
@@ -32,8 +34,10 @@ if (array_key_exists('submit', $_POST)) {
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
     if ($first_name_err == "" && $last_name_err == "") {
-        $_SESSION["first_name"] = $_POST['first_name'];
-        $_SESSION["last_name"] = $_POST['last_name'];
+        $user->setFirstName(test_input($_POST['first_name']));
+        $user->setLastName(test_input($_POST['last_name']));
+        $_SESSION["first_name"] = $user->getFirstName();
+        $_SESSION["last_name"] = $user->getLastName();
         $upload_directory = "images/";
         $destination_path = $upload_directory . basename($_FILES['user_image']['name']);
         $ready_to_upload = 1;
