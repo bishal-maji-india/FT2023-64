@@ -9,14 +9,11 @@ if (!isset($_SESSION["login"])) {
         $page_filename = "../basic_php/assignment_{$page}/index.php";
         if (file_exists($page_filename)) {
             session_abort();
-
             include($page_filename);
           }else{
                 print("no file exist {$page_filename}");
           }
-
       } else {
-
         $page_filename = "/index.php";
         if (file_exists($page_filename)) {
             session_abort();
@@ -33,7 +30,8 @@ if (!isset($_SESSION["login"])) {
 
 <head>
 
-    <title></title>
+    <title>Homepage</title>
+    <link rel="stylesheet" href="styles.css">
 
 </head>
 
@@ -46,7 +44,9 @@ if (array_key_exists('button_logout', $_POST)) {
 ?>
 
 <body>
-    <ul>
+<div class="container">
+<div class="bottom-nav-bar">
+<ul>
         <li><a href="/assignment_1/index.php">Assignment 1</a></li>
         <li><a href="/assignment_2/index.php">Assignment 2</a></li>
         <li><a href="/assignment_3/index.php">Assignment 3</a></li>
@@ -55,10 +55,15 @@ if (array_key_exists('button_logout', $_POST)) {
         <li><a href="/assignment_6/index.php">Assignment 6</a></li>
         <li><a href="/assignment_7/auth.php">Assignment 7</a></li>
     </ul>
-
- <?php echo "<form method='post' >
+    <?php echo "<form method='post' >
         <input type='submit' name='button_logout'
         class='button' value='Logout' /></form>";
     ?>
+</div>
+
+</div>
+
+
+
 </body>
 </html>

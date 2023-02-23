@@ -28,4 +28,16 @@ h1{
 min-width: 250px;
 min-height: 100px;
 }
-
+.bottom-nav-bar{
+display: flex;
+}
+.bottom-nav-bar > ul{
+    display: flex;
+    list-style-type: none;
+    align-items: center;
+}
+.bottom-nav-bar> li, a{
+    padding: 10px;
+    text-decoration: none;
+    color: green;
+}
