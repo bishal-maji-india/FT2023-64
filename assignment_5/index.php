@@ -1,16 +1,21 @@
 <?php session_start();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
- <!-- link to global stylesheet -->
+<!-- link to global stylesheet -->
 <link href="../styles.css" rel="stylesheet" />
+
 <head>
   <title>Document</title>
 </head>
+
 <?php
 
-$first_name_err = $last_name_err = $img_upload_err = $mark_err = $phone_error = $mail_err = "";
+$first_name_err = $last_name_err = $img_upload_err = $mark_err = $phone_err = $mail_err = "";
 $first_name = $last_name = "";
+
+
 // user form validation
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
   if (empty($_POST["first_name"])) {
@@ -42,18 +47,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $mail_err = "Invalid email format";
   }
 }
+
+
 //this method runs when user submit the form
 if (array_key_exists('submit', $_POST)) {
-  ini_set('display_errors', 1);
-  ini_set('display_startup_errors', 1);
-  error_reporting(E_ALL);
-  if ($first_name_err == "" && $last_name_err == "" && $mark_err == "" && $phone_no_err == "" && $mail_err == "") {
+  if ($first_name_err == "" && $last_name_err == "" && $mark_err == "" && $phone_err == "" && $mail_err == "") {
+    //store the value in user class
+    $user = new User();
+    $user->test_inputsetFirstName(test_input($_POST['first_name']));
+    $user->setLastName(test_input($_POST['last_name']));
+    $user->setMarks(test_input($_POST['marks']));
+    $user->setPhone(test_input($_POST['phone']));
+    $user->setMail(test_input($_POST['email']));
 
-    $_SESSION["first_name"] = $_POST['first_name'];
-    $_SESSION["last_name"] = $_POST['last_name'];
-    $_SESSION["marks"] = $_POST['marks'];
-    $_SESSION["phone"] = $_POST['phone'];
-    $_SESSION["email"] = $_POST['email'];
+    $mail_id = $user->getMail();
+
+    //api call for email validation
+    $curlObj = curl_init();
+    curl_setopt_array($curlObj, array(
+      CURLOPT_URL => "https://api.apilayer.com/email_verification/check?email=" . $mail_id,
+      CURLOPT_HTTPHEADER => array(
+        "Content-Type: text/plain",
+        "apikey: kG3IBcX6qqFzwvOXaJnVRPq3luu9TL4O"
+      ),
+      CURLOPT_RETURNTRANSFER => true,
+      CURLOPT_ENCODING => "",
+      CURLOPT_FOLLOWLOCATION => true,
+    ));
+
+    $response = curl_exec($curlObj);
+    curl_close($curlObj);
+    $decoded_result = json_decode($response, true);
+
+    // check the email format is valid or not
+    if (!$decoded_result["format_valid"]) {
+      $mail_err = "email format is not valid";
+      return;
+    }
+
+    $_SESSION["first_name"] = user->getFirstName();
+    $_SESSION["last_name"] = user->getLastName();
+    $_SESSION["marks"] = user->getMarks();
+    $_SESSION["phone"] = user->getPhone();
+    $_SESSION["email"] = user->getMail();
 
     $upload_directory = "../assignment_2/images/";
     $destination_path = $upload_directory . basename($_FILES['user_image']['name']);
@@ -61,22 +97,25 @@ if (array_key_exists('submit', $_POST)) {
     $image_type = strtolower(pathinfo($destination_path, PATHINFO_EXTENSION));
 
 
-    //check if file already exist
+    // check if file already exist
     if (file_exists($destination_path)) {
       // $upload_err= "file already exixt";
       // deleting the file
       unlink($destination_path);
       // $ready_to_upload = 0;
     }
+
+
     //uploading only the specific formate
     if (
       $image_type != "jpg" && $image_type != "png" && $image_type != "jpeg"
       && $image_type != "gif"
     ) {
       $img_upload_err = "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
-
       $ready_to_upload = 0;
     }
+
+
     //finally upload the image if everything is good
     if ($ready_to_upload == 1) {
       if (move_uploaded_file($_FILES['user_image']['tmp_name'], $destination_path)) {
@@ -87,7 +126,18 @@ if (array_key_exists('submit', $_POST)) {
     }
   }
 }
+
+
+//to avoid sql injection we use this method
+function test_input($data)
+{
+  $data = trim($data);
+  $data = stripslashes($data);
+  $data = htmlspecialchars($data);
+  return $data;
+}
 ?>
+
 <body>
   <div class="container">
     <form name="task_five_form" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post" enctype="multipart/form-data">
@@ -96,12 +146,13 @@ if (array_key_exists('submit', $_POST)) {
       <h4>Full Name : <input type="text" class="fu_name" disabled name="full_name"></h4>
       <input type="file" name="user_image" id="user_image" />*<span class="error"> <?php echo $img_upload_err; ?></span>
       <h4>Subject Marks : <textarea type="text" class="sub-marks" name="marks"></textarea><span class="error">* <?php echo $mark_err; ?></span></h4><br>
-      <h4>Phone Number : <input type="number" name="phone"> <br><span class="error">* <?php echo $phone_no_err; ?></span></h4>
+      <h4>Phone Number : <input type="number" name="phone"> <br><span class="error">* <?php echo $phone_err; ?></span></h4>
       <h4>User Email : <input type="text" name="email"><br><span class="error">* <?php echo $mail_err; ?></span></h4>
       <div><button type="submit" name="submit">Submit Data</button></div>
     </form>
+  </div>
 </body>
-</div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 <script>
   $(document).ready(function() {
